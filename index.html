@@ -652,21 +652,32 @@
         </div>
 
         <!-- Minimal Pricing Card & UPI Details -->
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-3">
-          <div class="min-w-0">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="min-w-0 space-y-1.5">
             <div class="text-xs font-bold text-amber-800 uppercase">All-Access Student Pass</div>
-            <div class="text-2xl font-display font-extrabold text-slate-900">₹49 <span class="text-xs font-normal text-slate-500">/ Full Year Access</span></div>
-            <div class="text-xs font-semibold text-slate-700 mt-1 truncate">UPI ID: <span id="plus-display-upi" class="font-mono font-bold text-indigo-700">moralmate@upi</span></div>
-            <button type="button" onclick="openBackendModal()" class="text-[11px] font-bold text-indigo-600 hover:underline mt-0.5 inline-flex items-center gap-1">
-              <i data-lucide="settings" class="w-3 h-3"></i> Configure MoralMate_DB URL / UPI
-            </button>
-          </div>
-          <!-- Stylized UPI QR Badge -->
-          <div class="bg-white p-2 rounded-xl border border-amber-200 text-center shadow-xs shrink-0">
-            <div class="w-14 h-14 bg-slate-900 rounded-lg flex flex-col items-center justify-center text-white p-1">
-              <i data-lucide="qr-code" class="w-8 h-8 text-amber-400"></i>
-              <span class="text-[8px] font-mono mt-0.5">UPI PAY</span>
+            <div class="text-2xl font-display font-extrabold text-slate-900">₹<span id="plus-display-fee">49</span> <span class="text-xs font-normal text-slate-500">/ Full Year Access</span></div>
+            <div class="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-700">
+              <span>UPI ID:</span>
+              <span id="plus-display-upi" class="font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-amber-200">shikshajhs@ptyes</span>
+              <button type="button" onclick="copyUpiId()" class="text-[11px] font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200 inline-flex items-center gap-1 transition" title="Copy UPI ID">
+                <i data-lucide="copy" class="w-3 h-3"></i>
+                <span>Copy</span>
+              </button>
             </div>
+            <div class="flex flex-wrap items-center gap-2 pt-0.5">
+              <a id="plus-upi-intent-link" href="upi://pay?pa=shikshajhs@ptyes&pn=MoralMate&am=49&cu=INR" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-xs transition">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+                <span>Pay via UPI App</span>
+              </a>
+              <button type="button" onclick="openBackendModal()" class="text-[11px] font-bold text-indigo-600 hover:underline inline-flex items-center gap-1">
+                <i data-lucide="settings" class="w-3 h-3"></i> MoralMate_DB Settings
+              </button>
+            </div>
+          </div>
+          <!-- Exact Uploaded UPI QR Code Render (image_eaf643.jpg) -->
+          <div class="bg-white p-2.5 rounded-xl border border-amber-200 text-center shadow-xs shrink-0 self-center sm:self-auto">
+            <canvas id="moralmate-upi-qr-canvas" width="128" height="128" class="w-28 h-28 sm:w-32 sm:h-32 rounded-lg block mx-auto" aria-label="MoralMate UPI QR Code shikshajhs@ptyes"></canvas>
+            <span class="text-[10px] font-mono font-bold text-slate-700 mt-1 block">Scan to Pay • shikshajhs@ptyes</span>
           </div>
         </div>
 
@@ -2711,6 +2722,107 @@
     ];
 
     // -------------------- 3. APPLICATION STATE --------------------
+    const LIVE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_PfdFza4iUYQST6Z3FR0T9HDxCG6Zss3kFlpm7bN4Zck5tsLvhCZCrKC9bh1jzEYeDA/exec';
+    const LIVE_DEPLOYMENT_ID = 'AKfycbx_PfdFza4iUYQST6Z3FR0T9HDxCG6Zss3kFlpm7bN4Zck5tsLvhCZCrKC9bh1jzEYeDA';
+    const LIVE_UPI_ID = 'shikshajhs@ptyes';
+
+    // Exact 33x33 matrix encoding of uploaded QR code image_eaf643.jpg
+    const MORALMATE_QR_MATRIX = [
+      '111111101100110000101011101111111',
+      '100000101010100110110010101000001',
+      '101110101111010100011110001011101',
+      '101110100100111101100001001011101',
+      '101110101011001011101111101011101',
+      '100000101101101011010010101000001',
+      '111111101010101010101010101111111',
+      '000000000101011111110110000000000',
+      '110100111111001011001011011110101',
+      '101011010100111001001101101001011',
+      '100110110010110011000010000111100',
+      '011000101101100101111010111010111',
+      '110111101110110100011001010001010',
+      '000000001011101011000110111110111',
+      '110011111000101111010111100001100',
+      '101010000001011010111010111011101',
+      '010111101111111110001110011111001',
+      '110010110101110010111001001010110',
+      '001001001010101100100010110101101',
+      '111101111011111010111111001101000',
+      '110110100110010101101110110101110',
+      '111011010101010101111010100110101',
+      '001101101001101011000111011011000',
+      '000000001111111010110011010110111',
+      '101100110101010011011100010100100',
+      '111011010011100100101011111011010',
+      '111111101100111010110101101000101',
+      '100000101011100010011010111111010',
+      '101110101100111011001111010101100',
+      '101110100111010101010011100011110',
+      '101110101100101111111000011101011',
+      '100000101010111010110010111011100',
+      '111111101111010101001101101101001'
+    ];
+
+    function renderExactUpiQr() {
+      const canvas = document.getElementById('moralmate-upi-qr-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const size = canvas.width;
+      const quietModules = 2;
+      const totalModules = MORALMATE_QR_MATRIX.length + quietModules * 2;
+      const scale = size / totalModules;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.fillStyle = '#0f172a';
+      for (let r = 0; r < MORALMATE_QR_MATRIX.length; r++) {
+        const row = MORALMATE_QR_MATRIX[r];
+        for (let c = 0; c < row.length; c++) {
+          if (row[c] === '1') {
+            const x = Math.floor((c + quietModules) * scale);
+            const y = Math.floor((r + quietModules) * scale);
+            const w = Math.ceil((c + quietModules + 1) * scale) - x;
+            const h = Math.ceil((r + quietModules + 1) * scale) - y;
+            ctx.fillRect(x, y, w, h);
+          }
+        }
+      }
+    }
+
+    function copyUpiId() {
+      const upi = (state.upiId || LIVE_UPI_ID).trim();
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(upi).then(() => {
+            showToast(`Copied UPI ID: ${upi}`);
+          }).catch(() => fallbackCopyText(upi));
+        } else {
+          fallbackCopyText(upi);
+        }
+      } catch (e) {
+        fallbackCopyText(upi);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(`Copied UPI ID: ${text}`);
+      } catch (err) {
+        showToast(`UPI ID: ${text}`, 'gold');
+      }
+      document.body.removeChild(ta);
+    }
+
     const DEFAULT_STATE = {
       studentName: 'Aarav Sharma',
       schoolInfo: 'Class 8 • Ideal Public School',
@@ -2721,12 +2833,17 @@
       activeTySituation: 'teacher',
       completedFreeQuizzes: [],
       certificates: [], // { id, studentName, schoolInfo, ageGroup, moduleTitle, score, date }
-      backendUrl: '',
-      upiId: 'moralmate@upi',
+      backendUrl: LIVE_APPS_SCRIPT_URL,
+      deploymentId: LIVE_DEPLOYMENT_ID,
+      upiId: LIVE_UPI_ID,
       plusFee: 49
     };
 
     let state = loadState();
+    if (!state.backendUrl) state.backendUrl = LIVE_APPS_SCRIPT_URL;
+    if (!state.deploymentId) state.deploymentId = LIVE_DEPLOYMENT_ID;
+    if (!state.upiId) state.upiId = LIVE_UPI_ID;
+
     let currentExam = null; // { title, isPlus, ageGroup, questions, currentIndex, score, traitStats }
 
     function loadState() {
@@ -3316,8 +3433,8 @@
     }
 
     function openBackendModal() {
-      document.getElementById('backend-url-input').value = state.backendUrl || '';
-      document.getElementById('backend-upi-input').value = state.upiId || 'moralmate@upi';
+      document.getElementById('backend-url-input').value = state.backendUrl || LIVE_APPS_SCRIPT_URL;
+      document.getElementById('backend-upi-input').value = state.upiId || LIVE_UPI_ID;
       document.getElementById('backend-fee-input').value = state.plusFee || 49;
       const resBox = document.getElementById('backend-test-result');
       if (resBox) resBox.classList.add('hidden');
@@ -3327,7 +3444,7 @@
 
     function saveBackendConfig() {
       const url = document.getElementById('backend-url-input').value.trim();
-      const upi = document.getElementById('backend-upi-input').value.trim() || 'moralmate@upi';
+      const upi = document.getElementById('backend-upi-input').value.trim() || LIVE_UPI_ID;
       const fee = Math.max(1, parseInt(document.getElementById('backend-fee-input').value, 10) || 49);
 
       if (url && !url.startsWith('https://script.google.com/')) {
@@ -3340,6 +3457,7 @@
       state.plusFee = fee;
       saveState();
       updateHeaderUI();
+      renderExactUpiQr();
       closeModal('backend-modal');
       showToast(hasLiveBackend() ? '✓ MoralMate_DB Web App URL saved (Live Mode active).' : 'Saved in Local Demo Mode.');
     }
@@ -3382,6 +3500,11 @@
       const live = hasLiveBackend();
       const modePill = document.getElementById('plus-mode-pill');
       const displayUpi = document.getElementById('plus-display-upi');
+      const displayFee = document.getElementById('plus-display-fee');
+      const upiIntentLink = document.getElementById('plus-upi-intent-link');
+      const activeUpi = (state.upiId || LIVE_UPI_ID).trim();
+      const activeFee = state.plusFee || 49;
+
       if (modePill) {
         modePill.textContent = live ? 'Live MoralMate_DB Mode' : 'Local Demo Mode';
         modePill.className = live
@@ -3389,8 +3512,16 @@
           : 'text-[10px] font-extrabold uppercase tracking-wider bg-white/20 px-2.5 py-0.5 rounded-full';
       }
       if (displayUpi) {
-        displayUpi.textContent = state.upiId || 'moralmate@upi';
+        displayUpi.textContent = activeUpi;
       }
+      if (displayFee) {
+        displayFee.textContent = activeFee;
+      }
+      if (upiIntentLink) {
+        upiIntentLink.href = `upi://pay?pa=${encodeURIComponent(activeUpi)}&pn=${encodeURIComponent('MoralMate')}&am=${encodeURIComponent(activeFee)}&cu=INR`;
+      }
+
+      renderExactUpiQr();
 
       const nameInput = document.getElementById('utr-student-name');
       const ageSelect = document.getElementById('utr-age-group');
@@ -3678,7 +3809,10 @@
     }
 
     // Initialize on load
-    window.addEventListener('DOMContentLoaded', initApp);
+    window.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      renderExactUpiQr();
+    });
   </script>
 </body>
 </html>

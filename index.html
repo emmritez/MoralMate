@@ -784,7 +784,7 @@
       color: var(--muted);
     }
 
-    /* Fixed Bottom Navigation Bar */
+    /* Fixed Bottom Navigation Bar (Mobile Only) */
     .bottom-nav {
       position: fixed;
       left: 0;
@@ -826,6 +826,40 @@
     .bnav-icon {
       font-size: 1.15rem;
       line-height: 1;
+    }
+
+    /* Desktop (>= 768px): restore original clean horizontal single-row desktop header & hide mobile bottom bar */
+    @media (min-width: 768px) {
+      body {
+        padding-bottom: 36px;
+      }
+
+      .header-inner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        gap: 16px;
+      }
+
+      .brand-left {
+        flex: 0 1 auto;
+      }
+
+      .header-actions {
+        overflow-x: visible;
+        padding-bottom: 0;
+        flex-wrap: nowrap;
+      }
+
+      .bottom-nav {
+        display: none;
+      }
+
+      .site-footer {
+        margin-top: 28px;
+        padding: 18px 24px;
+      }
     }
 
     /* Modals */
@@ -1005,7 +1039,7 @@
     Offline Mode: Saved lessons, etiquette cards, and certificates are available. Live sync resumes when online.
   </div>
 
-  <!-- Readable Two-Tier Header -->
+  <!-- Responsive Header (2-row on Mobile, 1-row on Desktop) -->
   <header class="app-header">
     <div class="header-inner">
       <div class="brand-row">
@@ -1145,7 +1179,7 @@
     </footer>
   </main>
 
-  <!-- Fixed Bottom Navigation Bar -->
+  <!-- Fixed Bottom Navigation Bar (Mobile Only) -->
   <nav class="bottom-nav" aria-label="Primary Navigation">
     <div class="bottom-nav-inner">
       <button type="button" id="bnavLearn" class="bnav-btn active" data-action="nav-view" data-view="learn">
@@ -1571,7 +1605,7 @@
             { q: "Two classmates try to pull you into taking sides in a fight.", opts: ["Pick a side to look loyal", "Stay neutral and encourage calm resolution", "Spread details to other classes"], ans: 1, trait: "Emotional Maturity" },
             { q: "You feel behind compared to classmates' looks or gadgets online.", opts: ["Feel angry at yourself all day", "Remind yourself everyone has a different pace and focus on your growth", "Copy unhealthy habits"], ans: 1, trait: "Self-Worth" },
             { q: "A friend shares a secret that involves harming someone else.", opts: ["Keep it secret blindly", "Talk to a trusted adult so nobody gets hurt", "Post it anonymously"], ans: 1, trait: "Integrity" },
-            { q: "How can you tell a supportive friend from a toxic clique?", opts: ["Supportive friends respect your boundaries and don't belittle you", "They demand constant obedience", "They mock your goals"], ans: 0, trait: " discernment" },
+            { q: "How can you tell a supportive friend from a toxic clique?", opts: ["Supportive friends respect your boundaries and don't belittle you", "They demand constant obedience", "They mock your goals"], ans: 0, trait: "Discernment" },
             { q: "What is a healthy response to feeling excluded once?", opts: ["Assume everyone hates you forever", "Check in calmly and invest in kind, reliable peers", "Start a rumor"], ans: 1, trait: "Resilience" }
           ]
         },
@@ -1766,7 +1800,6 @@
         } catch (e) {}
       }
 
-      // Draw crisp UPI QR on canvas
       function drawQrCanvas() {
         const canvas = document.getElementById("upiQrCanvas");
         if (!canvas) return;

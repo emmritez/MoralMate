@@ -9,6 +9,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="MoralMate" />
   <meta name="description" content="MoralMate — Age-wise moral values, civic sense, school etiquette, picture stories, video stories, situational exams, and verified certificates." />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon-192x192.png" />
   <title>MoralMate — Learn Values. Build Character.</title>
   <style>
     :root {
@@ -2616,25 +2618,12 @@
         }
       } catch (e) {}
 
-      // Dynamic Web App Manifest
-      try {
-        const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="44" fill="#4338ca"/><text x="96" y="122" font-size="88" text-anchor="middle">🛡️</text></svg>`;
-        const iconUrl = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(iconSvg)));
-        const manifest = {
-          name: "MoralMate",
-          short_name: "MoralMate",
-          start_url: "./",
-          display: "standalone",
-          background_color: "#f4f6fb",
-          theme_color: "#4338ca",
-          icons: [{ src: iconUrl, sizes: "192x192", type: "image/svg+xml" }]
-        };
-        const mBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
-        const link = document.createElement("link");
-        link.rel = "manifest";
-        link.href = URL.createObjectURL(mBlob);
-        document.head.appendChild(link);
-      } catch (e) {}
+      // Register External Service Worker (sw.js)
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("./sw.js").catch(function () {});
+        });
+      }
 
       updateOnlineBanner();
       renderHeaderAndProfile();

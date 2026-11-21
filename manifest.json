@@ -1,0 +1,29 @@
+{
+  "name": "MoralMate \u2014 Learn. Grow. Be Kind.",
+  "short_name": "MoralMate",
+  "description": "Age-wise moral values, civic sense, school etiquette, picture stories, video stories, situational exams, and verified certificates.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6fb",
+  "theme_color": "#4338ca",
+  "categories": [
+    "education",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "./icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
